@@ -3,14 +3,13 @@ package com.example.backend.domain.user;
 import com.example.backend.dto.user.CreateUserRequest;
 
 import jakarta.persistence.*;
-// import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "User")
+@Table(name = "app_user")
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,22 +17,22 @@ import lombok.NoArgsConstructor;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "FirstName")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "LastName")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "Email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "PhoneNumber")
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "ZipCode")
+    @Column(name = "zip_code")
     private String zipCode;
 
     public static User from(CreateUserRequest request) {

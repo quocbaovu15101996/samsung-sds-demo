@@ -22,7 +22,8 @@ public class UserService {
     }
 
     public User createUser(CreateUserRequest request) throws Exception {
-        User userResponse = userRepository.save(User.from(request));
+        User user = User.from(request);
+        User userResponse = userRepository.save(user);
         return userResponse;
     }
 
