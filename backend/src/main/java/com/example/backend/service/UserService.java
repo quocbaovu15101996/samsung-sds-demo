@@ -17,18 +17,18 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> getAllUser() throws Exception {
+    public List<User> getUsers() throws Exception {
         return userRepository.findAll();
     }
 
-    public User createUser(CreateUserRequest request) throws Exception {
+    public User create(CreateUserRequest request) throws Exception {
         User user = User.from(request);
         User userResponse = userRepository.save(user);
         return userResponse;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public User updateUser(Long id, UpdateUserRequest request) {
+    public User update(Long id, UpdateUserRequest request) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
@@ -52,12 +52,12 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteUser(Long id) throws Exception {
+    public Boolean delete(Long id) throws Exception {
         userRepository.deleteById(id);
         return true;
     }
 
-    public User getUserById(Long id) throws Exception {
+    public User getDetail(Long id) throws Exception {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
