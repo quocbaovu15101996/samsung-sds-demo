@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/screens/form_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -29,11 +31,53 @@ class ItemListScreen extends StatefulWidget {
 
 class _ItemListScreenState extends State<ItemListScreen> {
   final List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+  final TextEditingController _textController = TextEditingController();
 
   void _addItem() {
-    setState(() {
-      items.add('Item ${items.length + 1}');
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Item'),
+          content: TextField(
+            controller: _textController,
+            decoration: const InputDecoration(
+              hintText: 'Enter item name',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _textController.clear();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_textController.text.isNotEmpty) {
+                  setState(() {
+                    items.add(_textController.text);
+                  });
+                  Navigator.pop(context);
+                  _textController.clear();
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onPressItem() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FormScreen()),
+    );
   }
 
   @override
@@ -50,9 +94,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
             leading: const Icon(Icons.article),
             title: Text(items[index]),
             trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // Handle item tap
-            },
+            onTap: _onPressItem,
           );
         },
       ),
