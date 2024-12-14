@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/models/user.dart';
+import 'package:mobile/networks/apis.dart';
 
 import 'package:mobile/screens/form_screen.dart';
 
@@ -30,8 +32,13 @@ class ItemListScreen extends StatefulWidget {
 }
 
 class _ItemListScreenState extends State<ItemListScreen> {
-  final List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+  Future<List<User>> users = fetchUsers();
   final TextEditingController _textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _addItem() {
     showDialog(
@@ -59,7 +66,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
               onPressed: () {
                 if (_textController.text.isNotEmpty) {
                   setState(() {
-                    items.add(_textController.text);
+                    // items.add(_textController.text);
                   });
                   Navigator.pop(context);
                   _textController.clear();
@@ -87,15 +94,27 @@ class _ItemListScreenState extends State<ItemListScreen> {
         title: const Text('Item List'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: const Icon(Icons.article),
-            title: Text(items[index]),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: _onPressItem,
-          );
+      body: FutureBuilder<List<User>>(
+        future: users,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: const Icon(Icons.article),
+                  title: Text(
+                      "${snapshot.data![index].firstName} ${snapshot.data![index].lastName}"),
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: _onPressItem,
+                );
+              },
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          return const Center(child: CircularProgressIndicator());
         },
       ),
       floatingActionButton: FloatingActionButton(
