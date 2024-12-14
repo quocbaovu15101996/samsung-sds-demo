@@ -80,10 +80,11 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
   }
 
-  void _onPressItem() {
+  void _onPressItem(int id) {
+    // print('Item pressed ${id}');
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const FormScreen()),
+      MaterialPageRoute(builder: (context) => FormScreen(userId: id)),
     );
   }
 
@@ -106,7 +107,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
                   title: Text(
                       "${snapshot.data![index].firstName} ${snapshot.data![index].lastName}"),
                   trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: _onPressItem,
+                  onTap: () {
+                    _onPressItem(snapshot.data![index].id);
+                  },
                 );
               },
             );

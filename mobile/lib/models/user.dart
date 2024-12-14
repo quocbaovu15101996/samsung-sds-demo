@@ -1,4 +1,3 @@
-
 class User {
   User({
     required this.id,
@@ -25,5 +24,16 @@ class User {
       phone: json['phone'],
       zipCode: json['zipCode'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phone': phone,
+      'zipCode': zipCode,
+    };
   }
 }
