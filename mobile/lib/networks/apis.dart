@@ -13,7 +13,7 @@ Future<List<User>> fetchUsers() async {
 
     return jsonResponse.map((json) => User.fromJson(json)).toList();
   } else {
-    throw Exception('Failed to load posts');
+    throw Exception('Failed to get users');
   }
 }
 
@@ -22,7 +22,7 @@ Future<User> fetchUserDetail(int id) async {
   if (response.statusCode == 200) {
     return User.fromJson(json.decode(response.body));
   } else {
-    throw Exception('Failed to load posts');
+    throw Exception('Failed to get user info');
   }
 }
 
@@ -31,7 +31,7 @@ Future<bool> deleteUser(int id) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    throw Exception('Failed to load posts');
+    throw Exception('Failed to delete user');
   }
 }
 
@@ -42,6 +42,17 @@ Future<User> updateUser(int id, User body) async {
   if (response.statusCode == 200) {
     return User.fromJson(json.decode(response.body));
   } else {
-    throw Exception('Failed to load posts');
+    throw Exception('Failed to update user');
+  }
+}
+
+Future<User> createUser(CreateUserParams body) async {
+  final response = await http.post(Uri.parse('${baseUrl}/users'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body.toJson()));
+  if (response.statusCode == 200) {
+    return User.fromJson(json.decode(response.body));
+  } else {
+    throw Exception('Failed to create user');
   }
 }
