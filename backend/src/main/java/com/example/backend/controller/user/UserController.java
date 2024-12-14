@@ -2,7 +2,9 @@ package com.example.backend.controller.user;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import com.example.backend.dto.user.CreateUserRequest;
 import com.example.backend.dto.user.UpdateUserRequest;
 import com.example.backend.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +30,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping()
-    public ResponseEntity<User> create(@RequestBody CreateUserRequest request) throws Exception {
+    public ResponseEntity<?> create(@Valid @RequestBody CreateUserRequest request, BindingResult binding)
+            throws Exception {
+        if (binding.hasErrors()) {
+            return new ResponseEntity<String>(binding.getAllErrors().get(0).getDefaultMessage(),
+                    HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(userService.create(request));
     }
 
