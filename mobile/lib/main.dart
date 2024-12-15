@@ -42,6 +42,7 @@ class _ItemListScreenState extends State<ItemListScreen>
     WidgetsBinding.instance.addObserver(this);
   }
 
+// need to re-check
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print("diddChangeAppLifecycleState: $state");
@@ -65,7 +66,7 @@ class _ItemListScreenState extends State<ItemListScreen>
   void _onPressItem(int id) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => FormScreen(userId: id)),
+      MaterialPageRoute(builder: (context) => FormScreen(userId: id, callback: _refresh)),
     );
   }
 
@@ -73,7 +74,7 @@ class _ItemListScreenState extends State<ItemListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List Users'),
+        title: const Text('List User'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: FutureBuilder<List<User>>(
@@ -86,7 +87,7 @@ class _ItemListScreenState extends State<ItemListScreen>
                 return ListTile(
                   leading: const Icon(Icons.article),
                   title: Text(
-                      "${snapshot.data![index].firstName} ${snapshot.data![index].lastName}"),
+                      "${snapshot.data![index].lastName} ${snapshot.data![index].firstName}"),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {
                     _onPressItem(snapshot.data![index].id ?? 0);

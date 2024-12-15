@@ -3,11 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/networks/apis.dart';
+import 'package:mobile/widgets/text_field.dart';
 
 class FormScreen extends StatefulWidget {
   final int userId;
-  const FormScreen({super.key, required this.userId});
-
+  final VoidCallback callback;
+  const FormScreen({
+    super.key,
+    required this.userId,
+    required this.callback, // Add to constructor
+  });
   @override
   State<FormScreen> createState() => _FormScreenState();
 }
@@ -20,7 +25,6 @@ class _FormScreenState extends State<FormScreen> {
   void initState() {
     super.initState();
     user = fetchUserDetail(widget.userId);
-    // print("user: ${user}");
   }
 
   final TextEditingController _textFirstName = TextEditingController();
@@ -66,6 +70,7 @@ class _FormScreenState extends State<FormScreen> {
         ),
       );
       Navigator.pop(context);
+      widget.callback();
     });
   }
 
@@ -78,6 +83,7 @@ class _FormScreenState extends State<FormScreen> {
         ),
       );
       Navigator.pop(context);
+      widget.callback();
     });
   }
 
@@ -85,7 +91,16 @@ class _FormScreenState extends State<FormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Detail Screen'),
+        title: FutureBuilder<User>(
+          future: user,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                  '${snapshot.data!.lastName} ${snapshot.data!.firstName}');
+            }
+            return const Text('User Detail');
+          },
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
@@ -112,60 +127,60 @@ class _FormScreenState extends State<FormScreen> {
                     'User ID: ${userData.id}',
                     style: const TextStyle(fontSize: 18),
                   ),
-                  TextField(
+                  TextFieldWidget(
+                    title: 'First Name',
+                    hintText: 'Enter first name',
                     controller: _textFirstName,
                     enabled: isEdit,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item name',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
-                  TextField(
+                  const SizedBox(height: 8),
+                  TextFieldWidget(
+                    title: 'Last Name',
+                    hintText: 'Enter last name',
                     controller: _textLastName,
                     enabled: isEdit,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item name',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
-                  TextField(
+                  const SizedBox(height: 8),
+                  TextFieldWidget(
+                    title: 'Email',
+                    hintText: 'Enter email',
                     controller: _textEmailName,
                     enabled: isEdit,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item name',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
-                  TextField(
+                  const SizedBox(height: 8),
+                  TextFieldWidget(
+                    title: 'Phone',
+                    hintText: 'Enter phone number',
                     controller: _textPhone,
                     enabled: isEdit,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item name',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
-                  TextField(
+                  const SizedBox(height: 8),
+                  TextFieldWidget(
+                    title: 'Zip Code',
+                    hintText: 'Enter zip code',
                     controller: _textZipCodeName,
                     enabled: isEdit,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item name',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
+                  const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ElevatedButton(
-                          onPressed: onSave,
-                          child: const Text('Save'),
+                      if (isEdit)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ElevatedButton(
+                            onPressed: onSave,
+                            child: const Text('Save'),
+                          ),
                         ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: ElevatedButton(
                           onPressed: onDelete,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
                           child: const Text('Delete'),
                         ),
                       ),
